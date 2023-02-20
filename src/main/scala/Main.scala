@@ -18,39 +18,47 @@ object Main {
     for (article <- articles){
       val link: String = extractArticleLink(article)
       val data = extractDataFromArticle(link, searchBrowser)
-      println(data)
-
     }
   }
 
 
+
   def extractDataFromArticle(link: String, browser: Browser): Unit={
 
-    val currentArticle = browser.get(link)
+    println("\n______________________\n")
 
-//    println(currentArticle)
+    val articleLink = link
 
-    val photoDownloadLinks = currentArticle >?> elementList("img").map(_ >?> attr ("data-lazy") flatten)
-    val photoDownloadLinksList: List[String] = photoDownloadLinks.getOrElse(List.empty).toList
+    val articleBody = browser.get(link) >> element("body")
 
-    photoDownloadLinksList.foreach(saveThePhoto)
+    val title = link.substring(30, link.length - 14)
+    //    println(s"Title: $title")
 
+    val photoDownloadLinks = articleBody >?> elementList("img").map(_ >?> attr("data-lazy") flatten)
+    val photoDownloadLinksList: List[String] = photoDownloadLinks.getOrElse(List.empty)
+    //    LINKI ze zdjeciami
+    //    photoDownloadLinksList.foreach(saveThePhoto)
 
+    val yearKilometrageFueltypeBodytype = articleBody >> elementList(".offer-main-params__item") >> allText take 4
+    //    println(s"params: $yearKilometrageFueltypeBodytype")
+
+    val location = articleBody >> text(".seller-card__links__link__cta")
+    //    println(s"location: $location")
+
+    val detailKeys = articleBody  >> elementList(".offer-params__item") >> text ("span")
+    val detailValues = articleBody  >> elementList(".offer-params__value") >> text
+    val details = (detailKeys zip detailValues) toMap
+
+    println(details)
 
   }
-
-
   def extractArticleLink(article: Element): String = {
-
-    val title = article >?> text("p")
-    println(s"\n________________________\nTITLE: ${title.mkString}")
-
     val linkToAd = article >> element("h2 a") attr "href"
-
     linkToAd
   }
 
   def saveThePhoto(link: String): Unit ={
-    //save the photo on location
+    println(link)
+    //TODO save the photo
   }
 }
