@@ -9,3 +9,5 @@ lazy val root = (project in file("."))
       "net.ruippeixotog" %% "scala-scraper" % "3.0.0"
     )
   )
+
+// apply https://mjakubowski84.github.io/parquet4s/docs/quick_start/
