@@ -12,17 +12,27 @@ object Main {
 
   def main(args: Array[String]) : Unit = {
 //    require(args.length >= 3, "please provide at least three arguments!")
+//      if (args.contains("toYear")){
+//     POSSIBLE OPTIONS VARIANT: toYear, fromYearToYear,
+//      }
 
 
+//    val manufacturer = "lexus"
+//    val model = "ls"
+//    val endYear = 2000
+//    val startYear = null
 
-    val manufacturer = "lexus"
-    val model = "ls"
+
+    val manufacturer = "bmw"
+    val model = "seria-3"
     val endYear = 2000
-    val startYear = null
+//    val startYear = null
 
-    val searchBrowser = JsoupBrowser()
-    val otomotoLSSearch = searchBrowser.get("https://www.otomoto.pl/osobowe/" + "lexus/ls?search%5Bfilter_float_year%3Ato%5D=2000")
-    val articles = otomotoLSSearch >> elementList("main article")
+
+
+    val link: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$endYear"
+    initateScraping(link)
+
 
 //
 //    case class Article(id: String,
@@ -35,16 +45,34 @@ object Main {
 //                       description: String)
 //
 
-    for (article <- articles){
+  }
 
-      val link: String = article >> element("h2 a") attr "href"
+  def initateScraping(link: String): Unit = {
 
-      val currentArticle = new OTOMOTOArticle(link, searchBrowser)
+    val searchBrowser = JsoupBrowser()
+    val page: searchBrowser.DocumentType = searchBrowser.get(link)
+
+    val nextPageButton = page >?> element("li[title='Next Page']")
+    println(nextPageButton)
+    //TODO IF ELEMENT EXISTS - LOOP
+
+    val articles: List[Element] = page >> elementList("main article")
+
+
+    for (article <- articles) {
+
+      val articleLink: String = article >> element("h2 a") attr "href"
+
+      val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
       val currentArticleSeq = currentArticle.toSeq
 
       println(currentArticleSeq)
 
-      }
+    }
+
   }
 
+
 }
+
+
