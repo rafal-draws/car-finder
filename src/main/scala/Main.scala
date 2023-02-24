@@ -5,7 +5,6 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
 import net.ruippeixotog.scalascraper.model.Element
 import net.ruippeixotog.scalascraper.scraper.ContentExtractors.text
-import org.jsoup.nodes.DocumentType
 import aggregators.OTOMOTOArticle
 
 object Main {
@@ -34,42 +33,61 @@ object Main {
     initateScraping(link)
 
 
-//
-//    case class Article(id: String,
-//                       date: String,
-//                       title: String,
-//                       yearKilometrageFuelTypeBodyType: List[String],
-//                       location: String,
-//                       details: Map[String, String],
-//                       equipment: List[String],
-//                       description: String)
-//
-
   }
 
   def initateScraping(link: String): Unit = {
+    println(s"______________________\n\nscraping started.\n$link\npage: 1")
 
     val searchBrowser = JsoupBrowser()
-    val page: searchBrowser.DocumentType = searchBrowser.get(link)
+    val page = searchBrowser.get(link)
+    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "error"
 
-    val nextPageButton = page >?> element("li[title='Next Page']")
-    println(nextPageButton)
-    //TODO IF ELEMENT EXISTS - LOOP
+    println(s"nextPageButtonclass = $nextPageButtonClass")
 
+
+    // first page iteration
     val articles: List[Element] = page >> elementList("main article")
-
 
     for (article <- articles) {
 
       val articleLink: String = article >> element("h2 a") attr "href"
-
       val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
       val currentArticleSeq = currentArticle.toSeq
 
+      //append avro
       println(currentArticleSeq)
 
     }
 
+
+    var pageIteration: Int = 2
+    while (!(nextPageButtonClass contains "pagination-item__disabled")) {
+
+
+      val page = searchBrowser.get(link + s"&page=$pageIteration")
+
+      println(s"______________________\n\nscraping continues\n$link&page=$pageIteration\npage: $pageIteration")
+      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Error"
+      println(s"nextPageButtonclass = $nextPageButtonClass")
+
+      val articles: List[Element] = page >> elementList("main article")
+      for (article <- articles) {
+
+        val articleLink: String = article >> element("h2 a") attr "href"
+
+        val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
+        val currentArticleSeq = currentArticle.toSeq
+
+        //append avro
+        println(currentArticleSeq)
+
+      }
+      pageIteration += 1
+
+
+
+    }
+      println("______________________\n\nscraping ended successfully")
   }
 
 
