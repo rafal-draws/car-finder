@@ -6,8 +6,10 @@ lazy val root = (project in file("."))
   .settings(
     name := "i_want_a_ls",
     libraryDependencies ++= Seq(
-      "net.ruippeixotog" %% "scala-scraper" % "3.0.0"
+      "net.ruippeixotog" %% "scala-scraper" % "3.0.0",
+
     )
   )
+val json4sNative = "org.json4s" %% "json4s-native" % "{latestVersion}"
 
 // apply https://mjakubowski84.github.io/parquet4s/docs/quick_start/

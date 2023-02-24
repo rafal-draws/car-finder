@@ -10,16 +10,7 @@ import aggregators.OTOMOTOArticle
 object Main {
 
   def main(args: Array[String]) : Unit = {
-//    require(args.length >= 3, "please provide at least three arguments!")
-//      if (args.contains("toYear")){
-//     POSSIBLE OPTIONS VARIANT: toYear, fromYearToYear,
-//      }
 
-
-//    val manufacturer = "lexus"
-//    val model = "ls"
-//    val endYear = 2000
-//    val startYear = null
 
 
     val manufacturer = "bmw"
@@ -28,6 +19,7 @@ object Main {
 //    val startYear = null
 
 
+    // if no args provided -> search in config.yaml -> read objects -> create search string -> scrape
 
     val link: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$endYear"
     initateScraping(link)
