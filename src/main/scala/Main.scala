@@ -1,87 +1,39 @@
-import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser.{JsoupDocument, JsoupElement}
-import net.ruippeixotog.scalascraper.dsl.DSL._
-import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
-import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
-import net.ruippeixotog.scalascraper.model.Element
-import net.ruippeixotog.scalascraper.scraper.ContentExtractors.text
-import aggregators.OTOMOTOArticle
+import org.json4s._
+import org.json4s.native.JsonMethods._
+import engines.OTOMOTOScrapingEngine
 
 object Main {
 
   def main(args: Array[String]) : Unit = {
+    val parametersFile = scala.io.Source.fromFile(System.getProperty("user.dir") + "\\parameters.json")
+    val parameters = parametersFile.getLines().mkString
+    parametersFile.close()
+
+    val json = parse(parameters)
+
+    val searchParameters: List[(String, String, BigInt)] = for {
+      JObject(child) <- json
+      JField("manufacturer", JString(manufacturer)) <- child
+      JField("model", JString(model)) <- child
+      JField("to", JInt(to)) <- child
+    } yield (manufacturer, model, to)
 
 
 
-    val manufacturer = "bmw"
-    val model = "seria-3"
-    val endYear = 2000
-//    val startYear = null
+    for (searchParameter <- searchParameters){
+      val manufacturer = searchParameter._1
+      val model = searchParameter._2
+      val to = searchParameter._3
 
+      val otomotoScrapingEngine: OTOMOTOScrapingEngine = new OTOMOTOScrapingEngine()
 
-    // if no args provided -> search in config.yaml -> read objects -> create search string -> scrape
+      val link: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$to"
 
-    val link: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$endYear"
-    initateScraping(link)
-
-
-  }
-
-  def initateScraping(link: String): Unit = {
-    println(s"______________________\n\nscraping started.\n$link\npage: 1")
-
-    val searchBrowser = JsoupBrowser()
-    val page = searchBrowser.get(link)
-    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "error"
-
-    println(s"nextPageButtonclass = $nextPageButtonClass")
-
-
-    // first page iteration
-    val articles: List[Element] = page >> elementList("main article")
-
-    for (article <- articles) {
-
-      val articleLink: String = article >> element("h2 a") attr "href"
-      val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-      val currentArticleSeq = currentArticle.toSeq
-
-      //append avro
-      println(currentArticleSeq)
-
-    }
-
-
-    var pageIteration: Int = 2
-    while (!(nextPageButtonClass contains "pagination-item__disabled")) {
-
-
-      val page = searchBrowser.get(link + s"&page=$pageIteration")
-
-      println(s"______________________\n\nscraping continues\n$link&page=$pageIteration\npage: $pageIteration")
-      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Error"
-      println(s"nextPageButtonclass = $nextPageButtonClass")
-
-      val articles: List[Element] = page >> elementList("main article")
-      for (article <- articles) {
-
-        val articleLink: String = article >> element("h2 a") attr "href"
-
-        val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-        val currentArticleSeq = currentArticle.toSeq
-
-        //append avro
-        println(currentArticleSeq)
-
-      }
-      pageIteration += 1
-
+      otomotoScrapingEngine.initiateOTOMOTOScraping(link)
 
 
     }
-      println("______________________\n\nscraping ended successfully")
   }
-
 
 }
 

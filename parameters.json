@@ -1,60 +1,43 @@
 [
   {
     "manufacturer": "bmw",
-    "models": "seria-3",
-    "year": {
-      "to": 2000
-    }
+    "model": "seria-3",
+    "to": 2000
   },
   {
     "manufacturer": "bmw",
     "model": "seria-5",
-    "year": {
-      "to": 2000
-    }
+    "to": 2000
   },
   {
     "manufacturer": "lexus",
     "model": "ls",
-    "year": {
-      "to": 2000
-    }
+    "to": 2000
   },
   {
     "manufacturer": "porsche",
     "model": "911",
-    "year": {
-      "to": 2000
-    }
+    "to": 2000
   },
   {
     "manufacturer": "honda",
     "model": "civic",
-    "year": {
-      "to": 2010
-    }
+    "to": 2000
   },
   {
     "manufacturer": "mini",
     "model": "cooper",
-    "year": {
-      "to": 2016
-    }
+    "to": 2000
   },
   {
     "manufacturer": "mini",
     "model": "cooper-s",
-    "year": {
-      "to": 2016
-    }
+    "to": 2000
   },
   {
     "manufacturer": "volvo",
-    "model": "850"
-  },
-  {
-    "manufacturer": "audi",
-    "model": "a6"
+    "model": "850",
+    "to": 2000
   }
 
 ]
