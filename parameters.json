@@ -2,7 +2,7 @@
   {
     "manufacturer": "bmw",
     "model": "seria-3",
-    "to": 2000
+    "to": 2007
   },
   {
     "manufacturer": "bmw",
@@ -38,6 +38,11 @@
     "manufacturer": "volvo",
     "model": "850",
     "to": 2000
+  },
+  {
+    "manufacturer": "ford",
+    "model": "mustang",
+    "to": 2019
   }
 
 ]

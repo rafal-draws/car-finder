@@ -5,53 +5,72 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Element
 import aggregators.OTOMOTOArticle
+import org.jsoup.HttpStatusException
+import org.json4s._
+import org.json4s.native.Serialization
+import org.json4s.native.Serialization.write
 
+import java.io.FileWriter
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class OTOMOTOScrapingEngine {
 
-  def initiateOTOMOTOScraping(link: String, outputFile: String): Unit = {
-    println(s"______________________\n\nscraping started.\n$link\npage: 1")
+  /*
+  * Assuming that every link provides at least one page of articles, it must collect all visible articles.
+  * First page does not contain page list buttons, therefore it wont find pagination-step-forwards element
+  * Although, the nextPageButtonClass becomes "Last Page". Therefore, it wont be "continuing" the scraping,
+  * But will end on the first, initial iteration.
+   */
+
+
+  def initiateOTOMOTOScraping(link: String, filename: String, withPhotos: Boolean): Unit = {
+
 
     val searchBrowser = JsoupBrowser()
-
-    val page = searchBrowser.get(link)
-    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "error"
-    val articles: List[Element] = page >> elementList("main article")
-
-    for (article <- articles) {
-      val articleLink: String = article >> element("h2 a") attr "href"
-      val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-      val currentArticleSeq = currentArticle.toSeq
-
-      println(currentArticleSeq)
-    }
+    val page = searchBrowser.get(link + "&page=1")
+    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
 
-    var pageIteration: Int = 2
-    while (!(nextPageButtonClass contains "pagination-item__disabled")) {
+    var pageIteration: Int = 1
+    var articlesAmount: Int = 0
 
+
+    do {
       val page = searchBrowser.get(link + s"&page=$pageIteration")
-
-      println(s"______________________\n\nscraping continues\n$link&page=$pageIteration\npage: $pageIteration")
-
-      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Error"
-      println(s"nextPageButtonclass = $nextPageButtonClass")
+      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
       val articles: List[Element] = page >> elementList("main article")
       for (article <- articles) {
 
-        val articleLink: String = article >> element("h2 a") attr "href"
+        val articleLink: String = try {
+          article >> element("h2 a") attr "href"
+        } catch {
+          case e: NoSuchElementException => "http://otomoto.pl"
+        }
 
-        val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-        val currentArticleSeq = currentArticle.toSeq
+        val currentArticleSeq = try {
+          val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
+          if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
+        } catch {
+          case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
+        }
 
-        println(currentArticleSeq)
+        implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+
+        val articleJson = write(currentArticleSeq)
+
+        val fw = new FileWriter(filename, true)
+        try fw.write(articleJson + ",")
+        finally fw.close()
+
+        articlesAmount += 1
       }
       pageIteration += 1
 
+    } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
-    }
-    println("______________________\n\nscraping ended successfully")
+    println(s"Articles fetched: $articlesAmount")
   }
 
 }
