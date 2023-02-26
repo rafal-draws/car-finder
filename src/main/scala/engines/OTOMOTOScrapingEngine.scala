@@ -9,28 +9,21 @@ import aggregators.OTOMOTOArticle
 
 class OTOMOTOScrapingEngine {
 
-  def initiateOTOMOTOScraping(link: String): Unit = {
+  def initiateOTOMOTOScraping(link: String, outputFile: String): Unit = {
     println(s"______________________\n\nscraping started.\n$link\npage: 1")
 
     val searchBrowser = JsoupBrowser()
+
     val page = searchBrowser.get(link)
     var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "error"
-
-    println(s"nextPageButtonclass = $nextPageButtonClass")
-
-
-    // first page iteration due confirmation of next page button
     val articles: List[Element] = page >> elementList("main article")
 
     for (article <- articles) {
-
       val articleLink: String = article >> element("h2 a") attr "href"
       val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
       val currentArticleSeq = currentArticle.toSeq
 
-      //append avro
       println(currentArticleSeq)
-
     }
 
 
