@@ -16,6 +16,8 @@ class OTOMOTOScrapingEngine {
   * Although, the nextPageButtonClass becomes "Last Page". Therefore, it wont be "continuing" the scraping,
   * But will end on the first, initial iteration.
    */
+
+
   def initiateOTOMOTOScraping(link: String): Unit = {
 
     val searchBrowser = JsoupBrowser()
