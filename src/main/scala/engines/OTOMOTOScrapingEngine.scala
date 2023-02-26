@@ -24,7 +24,7 @@ class OTOMOTOScrapingEngine {
    */
 
 
-  def initiateOTOMOTOScraping(link: String, filename: String): Unit = {
+  def initiateOTOMOTOScraping(link: String, filename: String, withPhotos: Boolean): Unit = {
 
 
     val searchBrowser = JsoupBrowser()
@@ -50,7 +50,7 @@ class OTOMOTOScrapingEngine {
 
         val currentArticleSeq = try {
           val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-          currentArticle.toSeq
+          if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
         } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
         }

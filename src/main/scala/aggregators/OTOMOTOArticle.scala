@@ -34,6 +34,9 @@ class OTOMOTOArticle (link: String, browser: Browser){
 
 
   def toSeq: Seq[Any] = Seq(id, date, title, articleLink, photoDownloadLinks, location, yearKilometrageFueltypeBodytype, details, equipment, description)
+
+  def toSeqNoPhotos: Seq[Any] = Seq(id, date, title, articleLink, location, yearKilometrageFueltypeBodytype, details, equipment, description)
+
   private def savePhotosToDrive(link: String): Unit = {
     println(s"photo saved! $link")
   }
