@@ -31,6 +31,7 @@ class OTOMOTOScrapingEngine {
     val page = searchBrowser.get(link + "&page=1")
     var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
+
     var pageIteration: Int = 1
     var articlesAmount: Int = 0
 
