@@ -6,7 +6,13 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Element
 import aggregators.OTOMOTOArticle
 import org.jsoup.HttpStatusException
+import org.json4s._
+import org.json4s.native.Serialization
+import org.json4s.native.Serialization.write
 
+import java.io.FileWriter
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class OTOMOTOScrapingEngine {
 
@@ -18,22 +24,20 @@ class OTOMOTOScrapingEngine {
    */
 
 
-  def initiateOTOMOTOScraping(link: String): Unit = {
+  def initiateOTOMOTOScraping(link: String, filename: String): Unit = {
+
 
     val searchBrowser = JsoupBrowser()
     val page = searchBrowser.get(link + "&page=1")
     var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
     var pageIteration: Int = 1
+    var articlesAmount: Int = 0
 
 
     do {
       val page = searchBrowser.get(link + s"&page=$pageIteration")
-
-      println(s"______________________\nscraping:\n$link&page=$pageIteration\npage: $pageIteration")
-
       nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
-      println(s"nextPageButtonclass = $nextPageButtonClass")
 
       val articles: List[Element] = page >> elementList("main article")
       for (article <- articles) {
@@ -51,16 +55,21 @@ class OTOMOTOScrapingEngine {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
         }
 
-        println(currentArticleSeq)
+        implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+
+        val articleJson = write(currentArticleSeq)
+
+        val fw = new FileWriter(filename, true)
+        try fw.write(articleJson + ",")
+        finally fw.close()
+
+        articlesAmount += 1
       }
-
       pageIteration += 1
-
 
     } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
-
-    println("______________________\n\nscraping ended successfully")
+    println(s"Articles fetched: $articlesAmount")
   }
 
 }

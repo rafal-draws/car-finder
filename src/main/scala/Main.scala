@@ -1,36 +1,31 @@
-import org.json4s._
-import org.json4s.native.JsonMethods._
 import engines.OTOMOTOScrapingEngine
+import utils.ParameterFileReader
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object Main {
 
   def main(args: Array[String]) : Unit = {
-    val parametersFile = scala.io.Source.fromFile(System.getProperty("user.dir") + "\\parameters.json")
-    val parameters = parametersFile.getLines().mkString
-    parametersFile.close()
 
-    val json = parse(parameters)
+    val filename = if (args.length >= 1) args(0) else
+      "C:\\Users\\rafal\\Desktop\\data\\otomotoScrapedData"+ DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm").format(LocalDateTime.now) + ".json"
 
-    val searchParameters: List[(String, String, BigInt)] = for {
-      JObject(child) <- json
-      JField("manufacturer", JString(manufacturer)) <- child
-      JField("model", JString(model)) <- child
-      JField("to", JInt(to)) <- child
-    } yield (manufacturer, model, to)
+    val otomotoScrapingEngine: OTOMOTOScrapingEngine = new OTOMOTOScrapingEngine()
+    val parameterFileReader: ParameterFileReader = new ParameterFileReader()
 
-
+    val searchParameters: List[(String, String, BigInt)] = parameterFileReader.read("parameters.json")
 
     for (searchParameter <- searchParameters){
       val manufacturer = searchParameter._1
       val model = searchParameter._2
       val to = searchParameter._3
 
-      val otomotoScrapingEngine: OTOMOTOScrapingEngine = new OTOMOTOScrapingEngine()
-
       val link: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$to"
 
-      otomotoScrapingEngine.initiateOTOMOTOScraping(link)
-
+      println(s"Scraping initiated: $manufacturer, $model, to year: $to")
+      otomotoScrapingEngine.initiateOTOMOTOScraping(link, filename)
+      println(s"Scraping finished.\n")
 
     }
   }
