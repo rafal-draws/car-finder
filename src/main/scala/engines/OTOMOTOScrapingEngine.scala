@@ -10,7 +10,7 @@ import org.json4s._
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.write
 
-import java.io.FileWriter
+import java.io.{FileWriter, IOException}
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -44,6 +44,7 @@ class OTOMOTOScrapingEngine {
       for (article <- articles) {
 
         val articleLink: String = try {
+          println(s"article link is: ${article >> element("h2 a")}")
           article >> element("h2 a") attr "href"
         } catch {
           case e: NoSuchElementException => "http://otomoto.pl"
@@ -54,6 +55,8 @@ class OTOMOTOScrapingEngine {
           if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
         } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
+          case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration -> $articleLink")
+          case e: IOException => println(s"Too many redirects occured trying to load URL -> $articleLink")
         }
 
         implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
