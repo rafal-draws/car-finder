@@ -1,62 +1,171 @@
 [
   {
-    "manufacturer": "mercedes-benz",
-    "model": "sl",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "mercedes-benz",
+      "model": "sl",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "mercedes-benz",
+      "model": "klasa-sl",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "bmw",
-    "model": "seria-3",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "bmw",
+      "model": "seria-3",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "bmw",
+      "model": "seria-3",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "bmw",
-    "model": "seria-5",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "bmw",
+      "model": "seria-5",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "bmw",
+      "model": "seria-5",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "lexus",
-    "model": "ls",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "lexus",
+      "model": "ls",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "lexus",
+      "model": "seria-ls",
+      "startYear": 1990,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "porsche",
-    "model": "911",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "porsche",
+      "model": "911",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "porsche",
+      "model": "seria-911",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "honda",
-    "model": "civic",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "honda",
+      "model": "civic",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "honda",
+      "model": "civic",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "mini",
-    "model": "cooper-s",
-    "to": 2007
+    "otomoto": {
+      "manufacturer": "mini",
+      "model": "cooper-s",
+      "startYear": 1980,
+      "endYear": 2007
+    },
+    "mobilede": {
+      "manufacturer": "mini",
+      "model": "cooper-s",
+      "startYear": 1980,
+      "endYear": 2007
+    }
   },
   {
-    "manufacturer": "volvo",
-    "model": "850",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "ford",
-    "model": "mustang",
-    "to": 2014
+    "mobilede": {
+      "manufacturer": "volvo",
+      "model": "855",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "mercedes-benz",
-    "model": "w124-1984-1993",
-    "to": 1993
+    "otomoto": {
+      "manufacturer": "ford",
+      "model": "mustang",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "ford",
+      "model": "mustang",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
-    "manufacturer": "mercedes-benz",
-    "model": "e-klasa",
-    "to": 1997
+    "otomoto": {
+      "manufacturer": "mercedes-benz",
+      "model": "w124-1984-1993",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "mercedes-benz",
+      "model": "klasa-e",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   },
   {
+    "otomoto": {
+      "manufacturer": "mercedes-benz",
+      "model": "e-klasa",
+      "startYear": 1980,
+      "endYear": 2000
+    }
+  },
+  { "otomoto" : {
     "manufacturer": "mercedes-benz",
     "model": "w201-190",
-    "to": 2000
+    "startYear": 1980,
+    "endYear": 2000
+  }, "mobilede" :
+  {
+    "manufacturer": "mercedes-benz",
+    "model": "190",
+    "startYear": 1980,
+    "endYear": 2000
+  }
   }
 ]
