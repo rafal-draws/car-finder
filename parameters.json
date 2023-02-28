@@ -1,8 +1,13 @@
 [
   {
+    "manufacturer": "mercedes-benz",
+    "model": "sl",
+    "to": 2000
+  },
+  {
     "manufacturer": "bmw",
     "model": "seria-3",
-    "to": 2007
+    "to": 2000
   },
   {
     "manufacturer": "bmw",
@@ -26,13 +31,8 @@
   },
   {
     "manufacturer": "mini",
-    "model": "cooper",
-    "to": 2000
-  },
-  {
-    "manufacturer": "mini",
     "model": "cooper-s",
-    "to": 2000
+    "to": 2007
   },
   {
     "manufacturer": "volvo",
@@ -42,7 +42,21 @@
   {
     "manufacturer": "ford",
     "model": "mustang",
-    "to": 2019
+    "to": 2014
+  },
+  {
+    "manufacturer": "mercedes-benz",
+    "model": "w124-1984-1993",
+    "to": 1993
+  },
+  {
+    "manufacturer": "mercedes-benz",
+    "model": "e-klasa",
+    "to": 1997
+  },
+  {
+    "manufacturer": "mercedes-benz",
+    "model": "w201-190",
+    "to": 2000
   }
-
 ]
