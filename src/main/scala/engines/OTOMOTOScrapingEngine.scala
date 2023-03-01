@@ -11,6 +11,7 @@ import org.json4s.native.Serialization
 import org.json4s.native.Serialization.write
 
 import java.io.{FileWriter, IOException}
+import java.net.SocketTimeoutException
 
 class OTOMOTOScrapingEngine {
 
@@ -45,38 +46,42 @@ class OTOMOTOScrapingEngine {
 
 
     do {
-      val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
-      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
+      try {
+        val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
+        nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
-      val articles: List[Element] = page >> elementList("main article")
-      for (article <- articles) {
+        val articles: List[Element] = page >> elementList("main article")
+        for (article <- articles) {
 
-        val articleLink: String = try {
-          println(s"article link is: ${article >> element("h2 a") attr "href"}")
-          article >> element("h2 a") attr "href"
-        } catch {
+          val articleLink: String = article >> element("h2 a") attr "href"
+
+          //TODO CLEANUP JSON OUTPUT
+          val currentArticleSeq = {
+            val currentArticle = new OTOMOTOArticle(articleLink, browser)
+            if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
+          }
+
+          implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+
+          val articleJson = write(currentArticleSeq)
+
+          val fw = new FileWriter(filename, true)
+          try fw.write(articleJson + ",")
+          finally fw.close()
+
+          articlesAmount += 1
+        }
+
+      } catch {
+
+          case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration")
+          case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration")
+          case e: IOException => println(s"Too many redirects occured trying to load URL")
           case e: NoSuchElementException => "http://otomoto.pl"
-        }
-
-        val currentArticleSeq = try {
-          val currentArticle = new OTOMOTOArticle(articleLink, browser)
-          if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
-        } catch {
-          case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
-          case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration -> $articleLink")
-          case e: IOException => println(s"Too many redirects occured trying to load URL -> $articleLink")
-        }
-
-        implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
-
-        val articleJson = write(currentArticleSeq)
-
-        val fw = new FileWriter(filename, true)
-        try fw.write(articleJson + ",")
-        finally fw.close()
-
-        articlesAmount += 1
+          case e: SocketTimeoutException => println("Socket Timed out!")
       }
+
+
       pageIteration += 1
 
     } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))

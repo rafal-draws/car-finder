@@ -22,15 +22,15 @@ object Main {
     val parameterFileReader: ParameterFileReader = new ParameterFileReader()
 
     val OTOMOTOSearchParametersList: List[(String, String, BigInt, BigInt)] = parameterFileReader.readForOtomoto("parameters.json")
-    val MOBILEDESearchParametersList: List[(String, String, BigInt, BigInt, BigInt, BigInt)] = parameterFileReader.readForMobileDe("parameters.json")
+//    val MOBILEDESearchParametersList: List[(String, String, BigInt, BigInt, BigInt, BigInt)] = parameterFileReader.readForMobileDe("parameters.json")
 
 
     val startTime = System.nanoTime()
 
 
-    for (searchParameters <- MOBILEDESearchParametersList){
-      mobiledeScrapingEngine.initiateMOBILEDEScraping(searchParameters, filename, withPhotos)
-    }
+//    for (searchParameters <- MOBILEDESearchParametersList){
+//      mobiledeScrapingEngine.initiateMOBILEDEScraping(searchParameters, filename, withPhotos)
+//    }
 
     for (searchParameters <- OTOMOTOSearchParametersList) {
       otomotoScrapingEngine.initiateOTOMOTOScraping(searchParameters, filename, withPhotos)
