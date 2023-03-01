@@ -1,6 +1,6 @@
 package engines
 
-import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Element
@@ -11,8 +11,6 @@ import org.json4s.native.Serialization
 import org.json4s.native.Serialization.write
 
 import java.io.{FileWriter, IOException}
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class OTOMOTOScrapingEngine {
 
@@ -24,35 +22,45 @@ class OTOMOTOScrapingEngine {
    */
 
 
-  def initiateOTOMOTOScraping(link: String, filename: String, withPhotos: Boolean): Unit = {
-
-
-    val searchBrowser = JsoupBrowser()
-    val page = searchBrowser.get(link + "&page=1")
-    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
-
+  def initiateOTOMOTOScraping(searchParameters: (String, String, BigInt, BigInt),
+                              filename: String,
+                              withPhotos: Boolean): Unit = {
 
     var pageIteration: Int = 1
     var articlesAmount: Int = 0
 
+    val browser = JsoupBrowser()
+
+    val manufacturer = searchParameters._1
+    val model = searchParameters._2
+    val startYear = searchParameters._3
+    val endYear = searchParameters._4
+
+    val manufacturerStartYearToYearLink: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model/od-$startYear?search%5Bfilter_float_year%3Ato%5D=$endYear"
+
+    val initPage = browser.get(manufacturerStartYearToYearLink + "&page=1")
+    var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
+
+    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\n link: $manufacturerStartYearToYearLink")
+
 
     do {
-      val page = searchBrowser.get(link + s"&page=$pageIteration")
+      val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
       nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
       val articles: List[Element] = page >> elementList("main article")
       for (article <- articles) {
 
         val articleLink: String = try {
-          println(s"article link is: ${article >> element("h2 a")}")
+          println(s"article link is: ${article >> element("h2 a") attr "href"}")
           article >> element("h2 a") attr "href"
         } catch {
           case e: NoSuchElementException => "http://otomoto.pl"
         }
 
         val currentArticleSeq = try {
-          val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
-          if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
+          val currentArticle = new OTOMOTOArticle(articleLink, browser)
+          if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
         } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
           case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration -> $articleLink")
@@ -74,6 +82,7 @@ class OTOMOTOScrapingEngine {
     } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
     println(s"Articles fetched: $articlesAmount")
+    println(s"Scraping finished.\n")
   }
 
 }

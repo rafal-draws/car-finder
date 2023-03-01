@@ -36,34 +36,34 @@ class OTOMOTOArticle(link: String, browser: Browser) {
 
   private val photoDownloadLinks: List[String] = articleBody >?> elementList("img").map(_ >?> attr("data-lazy") flatten) getOrElse List.empty
 
-  def toSeq: Map[String, Any] = Map(id -> Seq(
+  def toMap: Map[String, Any] = Map(id ->
     Map("date" -> date,
       "title" -> title,
       "price" -> price,
       "url" -> articleLink,
       "photos" -> photoDownloadLinks,
       "location" -> location,
-    "year" -> yearKilometrageFueltypeBodytype.head,
-    "kilometers" -> yearKilometrageFueltypeBodytype(1),
-    "fueltype" -> yearKilometrageFueltypeBodytype(2),
-    "body" -> yearKilometrageFueltypeBodytype(3),
-    "details" -> details,
-    "equipment" -> equipment,
-    "description" -> description)))
+      "year" -> yearKilometrageFueltypeBodytype.head,
+      "kilometers" -> yearKilometrageFueltypeBodytype(1),
+      "fueltype" -> yearKilometrageFueltypeBodytype(2),
+      "body" -> yearKilometrageFueltypeBodytype(3),
+      "details" -> details,
+      "equipment" -> equipment,
+      "description" -> description))
 
-  def toSeqNoPhotos: Map[String, Any] = Map(id -> Seq(
+  def toMapNoPhotos: Map[String, Any] = Map(id ->
     Map("date" -> date,
-        "title" -> title,
-        "price" -> price,
-        "url" -> articleLink,
-        "location" -> location,
-        "year" -> yearKilometrageFueltypeBodytype.head,
-        "kilometers" -> yearKilometrageFueltypeBodytype(1),
-        "fueltype" -> yearKilometrageFueltypeBodytype(2),
-        "body" -> yearKilometrageFueltypeBodytype(3),
-        "details" -> details,
-        "equipment" -> equipment,
-        "description" -> description)))
+      "title" -> title,
+      "price" -> price,
+      "url" -> articleLink,
+      "location" -> location,
+      "year" -> yearKilometrageFueltypeBodytype.head,
+      "kilometers" -> yearKilometrageFueltypeBodytype(1),
+      "fueltype" -> yearKilometrageFueltypeBodytype(2),
+      "body" -> yearKilometrageFueltypeBodytype(3),
+      "details" -> details,
+      "equipment" -> equipment,
+      "description" -> description))
 
   private def savePhotosToDrive(link: String): Unit = {
     println(s"photo saved! $link")

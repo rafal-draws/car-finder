@@ -1,62 +1,18 @@
 [
   {
-    "manufacturer": "mercedes-benz",
-    "model": "sl",
-    "to": 2000
-  },
-  {
-    "manufacturer": "bmw",
-    "model": "seria-3",
-    "to": 2000
-  },
-  {
-    "manufacturer": "bmw",
-    "model": "seria-5",
-    "to": 2000
-  },
-  {
-    "manufacturer": "lexus",
-    "model": "ls",
-    "to": 2000
-  },
-  {
-    "manufacturer": "porsche",
-    "model": "911",
-    "to": 2000
-  },
-  {
-    "manufacturer": "honda",
-    "model": "civic",
-    "to": 2000
-  },
-  {
-    "manufacturer": "mini",
-    "model": "cooper-s",
-    "to": 2007
-  },
-  {
-    "manufacturer": "volvo",
-    "model": "850",
-    "to": 2000
-  },
-  {
-    "manufacturer": "ford",
-    "model": "mustang",
-    "to": 2014
-  },
-  {
-    "manufacturer": "mercedes-benz",
-    "model": "w124-1984-1993",
-    "to": 1993
-  },
-  {
-    "manufacturer": "mercedes-benz",
-    "model": "e-klasa",
-    "to": 1997
-  },
-  {
-    "manufacturer": "mercedes-benz",
-    "model": "w201-190",
-    "to": 2000
+    "otomoto": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "manufacturerId" : 25100,
+      "modelId" : 18,
+      "startYear": 1980,
+      "endYear": 2000
+    }
   }
 ]
