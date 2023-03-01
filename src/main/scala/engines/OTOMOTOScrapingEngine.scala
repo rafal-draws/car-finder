@@ -60,7 +60,7 @@ class OTOMOTOScrapingEngine {
 
         val currentArticleSeq = try {
           val currentArticle = new OTOMOTOArticle(articleLink, browser)
-          if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
+          if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
         } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
           case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration -> $articleLink")
