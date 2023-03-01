@@ -22,7 +22,12 @@ class OTOMOTOScrapingEngine {
    */
 
 
-  def initiateOTOMOTOScraping(searchParameters: (String, String, BigInt, BigInt), filename: String, withPhotos: Boolean): Unit = {
+  def initiateOTOMOTOScraping(searchParameters: (String, String, BigInt, BigInt),
+                              filename: String,
+                              withPhotos: Boolean): Unit = {
+
+    var pageIteration: Int = 1
+    var articlesAmount: Int = 0
 
     val manufacturer = searchParameters._1
     val model = searchParameters._2
@@ -38,8 +43,6 @@ class OTOMOTOScrapingEngine {
     var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
 
-    var pageIteration: Int = 1
-    var articlesAmount: Int = 0
 
     println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear")
     println(manufacturerStartYearToYearLink)

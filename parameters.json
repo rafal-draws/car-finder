@@ -1,6 +1,20 @@
 [
   {
     "otomoto": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "volvo",
+      "model": "850",
+      "startYear": 1980,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
       "manufacturer": "mercedes-benz",
       "model": "sl",
       "startYear": 1980,
@@ -98,20 +112,6 @@
     }
   },
   {
-    "otomoto": {
-      "manufacturer": "volvo",
-      "model": "850",
-      "startYear": 1980,
-      "endYear": 2000
-    },
-    "mobilede": {
-      "manufacturer": "volvo",
-      "model": "850",
-      "startYear": 1980,
-      "endYear": 2000
-    }
-  },
-  {
     "mobilede": {
       "manufacturer": "volvo",
       "model": "855",
@@ -155,17 +155,18 @@
       "endYear": 2000
     }
   },
-  { "otomoto" : {
-    "manufacturer": "mercedes-benz",
-    "model": "w201-190",
-    "startYear": 1980,
-    "endYear": 2000
-  }, "mobilede" :
   {
-    "manufacturer": "mercedes-benz",
-    "model": "190",
-    "startYear": 1980,
-    "endYear": 2000
-  }
+    "otomoto": {
+      "manufacturer": "mercedes-benz",
+      "model": "w201-190",
+      "startYear": 1980,
+      "endYear": 2000
+    },
+    "mobilede": {
+      "manufacturer": "mercedes-benz",
+      "model": "190",
+      "startYear": 1980,
+      "endYear": 2000
+    }
   }
 ]

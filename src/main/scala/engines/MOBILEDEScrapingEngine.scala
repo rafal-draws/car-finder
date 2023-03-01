@@ -2,23 +2,36 @@ package engines
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 
+import scala.collection.mutable
+
 class MOBILEDEScrapingEngine {
 
-  def initiateMOBILEDEScraping(searchParameters: (String, String, BigInt, BigInt)): Unit = {
+  def initiateMOBILEDEScraping(searchParameters: (String, String, BigInt, BigInt),
+                               filename: String,
+                               withPhotos: Boolean): Unit = {
 
     var pageIteration: Int = 1
     var articlesAmount: Int = 0
 
+    val browser = JsoupBrowser()
 
     val manufacturer = searchParameters._1
     val model = searchParameters._2
     val startYear = searchParameters._3
     val endYear = searchParameters._4
 
-    val manufacturerStartYearToYearLink: String = s"https://www.mobile.de/pl/samochod/$manufacturer-$model/vhc:car,pgn:1,pgs:50,ms1:17200_-11_,frn:$startYear,frx:$endYear"
+    val arguments = mutable.Map(
+      "makeModelVariant1Make" -> manufacturer,
+      "makeModelVariant1Model" -> model,
+    )
 
-    val searchBrowser = JsoupBrowser()
-    val page = searchBrowser.get(manufacturerStartYearToYearLink)
+    val manufacturerStartYearToYearLink: String = s"s"
+    val formLink: String = "https://www.mobile.de/pl"
+
+
+    val page = browser.get(formLink)
+    val form = page
+
 
   }
 
