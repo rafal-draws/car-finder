@@ -29,25 +29,23 @@ class OTOMOTOScrapingEngine {
     var pageIteration: Int = 1
     var articlesAmount: Int = 0
 
+    val browser = JsoupBrowser()
+
     val manufacturer = searchParameters._1
     val model = searchParameters._2
     val startYear = searchParameters._3
     val endYear = searchParameters._4
 
     val manufacturerStartYearToYearLink: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model/od-$startYear?search%5Bfilter_float_year%3Ato%5D=$endYear"
-    val manufacturerModelToYearLink: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model?search%5Bfilter_float_year%3Ato%5D=$endYear"
+
+    val initPage = browser.get(manufacturerStartYearToYearLink + "&page=1")
+    var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
+
+    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\n link: $manufacturerStartYearToYearLink")
 
 
-    val searchBrowser = JsoupBrowser()
-    val page = searchBrowser.get(manufacturerStartYearToYearLink + "&page=1")
-    var nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
-
-
-
-    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear")
-    println(manufacturerStartYearToYearLink)
     do {
-      val page = searchBrowser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
+      val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
       nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
       val articles: List[Element] = page >> elementList("main article")
@@ -61,7 +59,7 @@ class OTOMOTOScrapingEngine {
         }
 
         val currentArticleSeq = try {
-          val currentArticle = new OTOMOTOArticle(articleLink, searchBrowser)
+          val currentArticle = new OTOMOTOArticle(articleLink, browser)
           if (withPhotos) currentArticle.toSeq else currentArticle.toSeqNoPhotos
         } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")

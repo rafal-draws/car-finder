@@ -26,7 +26,7 @@ class ParameterFileReader {
 
   }
 
-  def readForMobileDe(name: String): List[(String, String, BigInt, BigInt)] = {
+  def readForMobileDe(name: String): List[(String, String, BigInt, BigInt, BigInt, BigInt)] = {
     val parametersFile = scala.io.Source.fromFile(System.getProperty("user.dir") + s"\\$name")
     val parameters = parametersFile.getLines().mkString
     parametersFile.close()
@@ -36,10 +36,12 @@ class ParameterFileReader {
     for {
       JObject(child) <- mobiledeJson
       JField("manufacturer", JString(manufacturer)) <- child
+      JField("manufacturerId", JInt(manufacturerId)) <- child
       JField("model", JString(model)) <- child
+      JField("modelId", JInt(modelId)) <- child
       JField("startYear", JInt(startYear)) <- child
       JField("endYear", JInt(endYear)) <- child
-    } yield (manufacturer, model, startYear, endYear)
+    } yield (manufacturer, model, manufacturerId, modelId, startYear, endYear)
   }
 
 }
