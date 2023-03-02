@@ -40,6 +40,7 @@ object Main {
     val endTime = System.nanoTime()
     val timeSpent = (endTime - startTime).toDouble / 1000000000.0
     println(s"Time taken: $timeSpent")
+    outputGenerator.removeComma(filename)
     outputGenerator.endOutputFile(filename)
   }
 

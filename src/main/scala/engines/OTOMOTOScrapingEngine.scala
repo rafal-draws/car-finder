@@ -57,7 +57,6 @@ class OTOMOTOScrapingEngine {
           implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
 
           val articleJson = write(currentArticleSeq)
-          outputGenerator.removeComma(filename)
           outputGenerator.appendOutput(articleJson, filename)
 
 
