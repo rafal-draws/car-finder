@@ -1,5 +1,5 @@
 import engines.{MOBILEDEScrapingEngine, OTOMOTOScrapingEngine}
-import utils.ParameterFileReader
+import utils.{OutputGenerator, ParameterFileReader}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,13 +20,14 @@ object Main {
     val otomotoScrapingEngine: OTOMOTOScrapingEngine = new OTOMOTOScrapingEngine()
     val mobiledeScrapingEngine: MOBILEDEScrapingEngine = new MOBILEDEScrapingEngine()
     val parameterFileReader: ParameterFileReader = new ParameterFileReader()
+    val outputGenerator: OutputGenerator = new OutputGenerator()
 
     val OTOMOTOSearchParametersList: List[(String, String, BigInt, BigInt)] = parameterFileReader.readForOtomoto("parameters.json")
 //    val MOBILEDESearchParametersList: List[(String, String, BigInt, BigInt, BigInt, BigInt)] = parameterFileReader.readForMobileDe("parameters.json")
 
 
     val startTime = System.nanoTime()
-
+    outputGenerator.createOutputFile(filename)
 
 //    for (searchParameters <- MOBILEDESearchParametersList){
 //      mobiledeScrapingEngine.initiateMOBILEDEScraping(searchParameters, filename, withPhotos)
@@ -39,6 +40,7 @@ object Main {
     val endTime = System.nanoTime()
     val timeSpent = (endTime - startTime).toDouble / 1000000000.0
     println(s"Time taken: $timeSpent")
+    outputGenerator.endOutputFile(filename)
   }
 
 }

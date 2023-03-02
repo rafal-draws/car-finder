@@ -1,7 +1,7 @@
 package utils
 
 import org.json4s.JsonAST.JArray
-import org.json4s.{DefaultFormats, JField, JInt, JObject, JString, JValue}
+import org.json4s.{DefaultFormats, JField, JInt, JObject, JString}
 import org.json4s.native.JsonMethods.parse
 
 class ParameterFileReader {

@@ -9,27 +9,21 @@ import org.jsoup.HttpStatusException
 import org.json4s._
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.write
+import utils.OutputGenerator
 
-import java.io.{FileWriter, IOException}
+import java.io.IOException
 import java.net.SocketTimeoutException
 
 class OTOMOTOScrapingEngine {
 
-  /*
-  * Assuming that every link provides at least one page of articles, it must collect all visible articles.
-  * First page does not contain page list buttons, therefore it wont find pagination-step-forwards element
-  * Although, the nextPageButtonClass becomes "Last Page". Therefore, it wont be "continuing" the scraping,
-  * But will end on the first, initial iteration.
-   */
-
-
   def initiateOTOMOTOScraping(searchParameters: (String, String, BigInt, BigInt),
                               filename: String,
                               withPhotos: Boolean): Unit = {
-
     var pageIteration: Int = 1
-    var articlesAmount: Int = 0
+    var articlesCount: Int = 0
 
+
+    val outputGenerator: OutputGenerator = new OutputGenerator()
     val browser = JsoupBrowser()
 
     val manufacturer = searchParameters._1
@@ -42,9 +36,8 @@ class OTOMOTOScrapingEngine {
     val initPage = browser.get(manufacturerStartYearToYearLink + "&page=1")
     var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
+
     println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\n link: $manufacturerStartYearToYearLink")
-
-
     do {
       try {
         val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
@@ -64,20 +57,18 @@ class OTOMOTOScrapingEngine {
           implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
 
           val articleJson = write(currentArticleSeq)
+          outputGenerator.removeComma(filename)
+          outputGenerator.appendOutput(articleJson, filename)
 
-          val fw = new FileWriter(filename, true)
-          try fw.write(articleJson + ",")
-          finally fw.close()
 
-          articlesAmount += 1
+          articlesCount += 1
         }
 
       } catch {
-
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration")
           case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration")
           case e: IOException => println(s"Too many redirects occured trying to load URL")
-          case e: NoSuchElementException => "http://otomoto.pl"
+          case e: NoSuchElementException => println("Element couldn't be found, skipping")
           case e: SocketTimeoutException => println("Socket Timed out!")
       }
 
@@ -86,7 +77,7 @@ class OTOMOTOScrapingEngine {
 
     } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
-    println(s"Articles fetched: $articlesAmount")
+    println(s"Articles fetched: $articlesCount")
     println(s"Scraping finished.\n")
   }
 
