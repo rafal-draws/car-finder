@@ -33,7 +33,12 @@ class OTOMOTOScrapingEngine {
 
     val manufacturerStartYearToYearLink: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model/od-$startYear?search%5Bfilter_float_year%3Ato%5D=$endYear"
 
-    val initPage = browser.get(manufacturerStartYearToYearLink + "&page=1")
+    val initPage = try {
+      browser.get(manufacturerStartYearToYearLink + "&page=1")
+    } catch {
+    case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration")
+    }
+      
     var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
 
