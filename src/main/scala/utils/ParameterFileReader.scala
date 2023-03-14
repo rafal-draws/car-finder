@@ -4,13 +4,23 @@ import org.json4s.JsonAST.JArray
 import org.json4s.{DefaultFormats, JField, JInt, JObject, JString}
 import org.json4s.native.JsonMethods.parse
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 class ParameterFileReader {
 
-  def readForOtomoto(name: String): List[(String, String, BigInt, BigInt)] = {
+  def readForOtomoto(name: String, os: String): List[(String, String, BigInt, BigInt)] = {
+    val os: String = System.getProperty("os.name")
+
 
     implicit val formats: DefaultFormats.type = DefaultFormats
 
-    val parametersFile = scala.io.Source.fromFile(System.getProperty("user.dir") + s"\\$name")
+    val parametersFile = os match {
+      case x if x.startsWith("Windows") => scala.io.Source.fromFile(System.getProperty("user.dir") + s"\\data\\$name")
+      case x if x.startsWith("Linux") => scala.io.Source.fromFile(System.getProperty("user.dir") + s"/data/$name")
+      case _ => scala.io.Source.fromFile(System.getProperty("user.dir") + s"/data/$name")
+    }
+
     val parameters = parametersFile.getLines().mkString
     parametersFile.close()
     val json = parse(parameters)

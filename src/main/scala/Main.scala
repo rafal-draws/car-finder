@@ -15,14 +15,14 @@ object Main {
       case _ => System.getProperty("user.dir") + DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm").format(LocalDateTime.now) + ".json"
     }
 
-    val withPhotos: Boolean = if (args.length >= 2) try args(1).toBoolean else false
+    val withPhotos: Boolean = if (args.length >= 2) args(1).toBoolean else false
 
     val otomotoScrapingEngine: OTOMOTOScrapingEngine = new OTOMOTOScrapingEngine()
     val mobiledeScrapingEngine: MOBILEDEScrapingEngine = new MOBILEDEScrapingEngine()
     val parameterFileReader: ParameterFileReader = new ParameterFileReader()
     val outputGenerator: OutputGenerator = new OutputGenerator()
 
-    val OTOMOTOSearchParametersList: List[(String, String, BigInt, BigInt)] = parameterFileReader.readForOtomoto("parameters.json")
+    val OTOMOTOSearchParametersList: List[(String, String, BigInt, BigInt)] = parameterFileReader.readForOtomoto("parameters.json", os)
 //    val MOBILEDESearchParametersList: List[(String, String, BigInt, BigInt, BigInt, BigInt)] = parameterFileReader.readForMobileDe("parameters.json")
 
 

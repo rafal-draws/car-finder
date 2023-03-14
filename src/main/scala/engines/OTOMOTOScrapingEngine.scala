@@ -37,7 +37,7 @@ class OTOMOTOScrapingEngine {
     var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
 
-    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\n link: $manufacturerStartYearToYearLink")
+    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\nlink: $manufacturerStartYearToYearLink")
     do {
       try {
         val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
@@ -48,7 +48,6 @@ class OTOMOTOScrapingEngine {
 
           val articleLink: String = article >> element("h2 a") attr "href"
 
-          //TODO CLEANUP JSON OUTPUT
           val currentArticleSeq = {
             val currentArticle = new OTOMOTOArticle(articleLink, browser)
             if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
