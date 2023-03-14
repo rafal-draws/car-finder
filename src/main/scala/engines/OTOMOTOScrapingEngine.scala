@@ -9,26 +9,21 @@ import org.jsoup.HttpStatusException
 import org.json4s._
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.write
+import utils.OutputGenerator
 
-import java.io.{FileWriter, IOException}
+import java.io.IOException
+import java.net.SocketTimeoutException
 
 class OTOMOTOScrapingEngine {
-
-  /*
-  * Assuming that every link provides at least one page of articles, it must collect all visible articles.
-  * First page does not contain page list buttons, therefore it wont find pagination-step-forwards element
-  * Although, the nextPageButtonClass becomes "Last Page". Therefore, it wont be "continuing" the scraping,
-  * But will end on the first, initial iteration.
-   */
-
 
   def initiateOTOMOTOScraping(searchParameters: (String, String, BigInt, BigInt),
                               filename: String,
                               withPhotos: Boolean): Unit = {
-
     var pageIteration: Int = 1
-    var articlesAmount: Int = 0
+    var articlesCount: Int = 0
 
+
+    val outputGenerator: OutputGenerator = new OutputGenerator()
     val browser = JsoupBrowser()
 
     val manufacturer = searchParameters._1
@@ -41,47 +36,46 @@ class OTOMOTOScrapingEngine {
     val initPage = browser.get(manufacturerStartYearToYearLink + "&page=1")
     var nextPageButtonClass = initPage >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
-    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\n link: $manufacturerStartYearToYearLink")
 
-
+    println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\nlink: $manufacturerStartYearToYearLink")
     do {
-      val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
-      nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
+      try {
+        val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
+        nextPageButtonClass = page >?> element("li[data-testid='pagination-step-forwards']") >> attr("class") getOrElse "Last Page"
 
-      val articles: List[Element] = page >> elementList("main article")
-      for (article <- articles) {
+        val articles: List[Element] = page >> elementList("main article")
+        for (article <- articles) {
 
-        val articleLink: String = try {
-          println(s"article link is: ${article >> element("h2 a") attr "href"}")
-          article >> element("h2 a") attr "href"
-        } catch {
-          case e: NoSuchElementException => "http://otomoto.pl"
+          val articleLink: String = article >> element("h2 a") attr "href"
+
+          val currentArticleSeq = {
+            val currentArticle = new OTOMOTOArticle(articleLink, browser)
+            if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
+          }
+
+          implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+
+          val articleJson = write(currentArticleSeq)
+          outputGenerator.appendOutput(articleJson, filename)
+
+
+          articlesCount += 1
         }
 
-        val currentArticleSeq = try {
-          val currentArticle = new OTOMOTOArticle(articleLink, browser)
-          if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
-        } catch {
-          case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration -> $articleLink")
-          case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration -> $articleLink")
-          case e: IOException => println(s"Too many redirects occured trying to load URL -> $articleLink")
-        }
-
-        implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
-
-        val articleJson = write(currentArticleSeq)
-
-        val fw = new FileWriter(filename, true)
-        try fw.write(articleJson + ",")
-        finally fw.close()
-
-        articlesAmount += 1
+      } catch {
+          case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration")
+          case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration")
+          case e: IOException => println(s"Too many redirects occured trying to load URL")
+          case e: NoSuchElementException => println("Element couldn't be found, skipping")
+          case e: SocketTimeoutException => println("Socket Timed out!")
       }
+
+
       pageIteration += 1
 
     } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
-    println(s"Articles fetched: $articlesAmount")
+    println(s"Articles fetched: $articlesCount")
     println(s"Scraping finished.\n")
   }
 

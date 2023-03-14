@@ -56,6 +56,29 @@
     }
   },
   {
+  "otomoto": {
+    "manufacturer": "bmw",
+    "model": "seria-7",
+    "startYear": 1980,
+    "endYear": 2000
+  }
+},{
+  "otomoto": {
+    "manufacturer": "bmw",
+    "model": "seria-6",
+    "startYear": 1980,
+    "endYear": 2000
+  }
+},
+  {
+    "otomoto": {
+      "manufacturer": "bmw",
+      "model": "seria-8",
+      "startYear": 1980,
+      "endYear": 2000
+    }
+  },
+  {
     "otomoto": {
       "manufacturer": "lexus",
       "model": "ls",
@@ -124,7 +147,7 @@
       "manufacturer": "ford",
       "model": "mustang",
       "startYear": 1980,
-      "endYear": 2000
+      "endYear": 2014
     },
     "mobilede": {
       "manufacturer": "ford",
@@ -168,5 +191,20 @@
       "startYear": 1980,
       "endYear": 2000
     }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "toyota",
+      "model": "land-cruiser",
+      "startYear": 1980,
+      "endYear": 2000
+    }
+  },{
+  "otomoto": {
+    "manufacturer": "dodge",
+    "model": "challenger",
+    "startYear": 1950,
+    "endYear": 2023
   }
+}
 ]
