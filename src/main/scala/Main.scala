@@ -5,7 +5,6 @@ object Main {
 
   def main(args: Array[String]) : Unit = {
 
-
     val filename = if (args.length >= 1) args(0) else OperatingSystemCheck.returnFilepath()
 
     val withPhotos: Boolean = if (args.length >= 2) args(1).toBoolean else false
