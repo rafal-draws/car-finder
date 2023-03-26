@@ -206,5 +206,13 @@
     "startYear": 1950,
     "endYear": 2023
   }
-}
+},
+  {
+  "otomoto": {
+    "manufacturer": "saab",
+    "model": "900",
+    "startYear": 1950,
+    "endYear": 2023
+  }
+  }
 ]

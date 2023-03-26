@@ -10,5 +10,5 @@ libraryDependencies ++= Seq(
 
 lazy val root = (project in file("."))
   .settings(
-    name := "i_want_a_ls"
+    name := "car-finder"
   )
