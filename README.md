@@ -29,4 +29,8 @@ It is true that the large number of records in single files means that commas ca
 
 - Spark job with in depth analysis to be added within the repository
 
+- Based on parameters, there is a ready skeleton of mobile.de scraping engine, but the amount of data was so mediocre that I gave up on mobile.de idea.
+
+- More websites!
+
 
