@@ -5,7 +5,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Element
 
-class OTOMOTOArticle(link: String, browser: Browser) {
+class OTOMOTOArticle(link: String, browser: Browser, scrapDate: String) {
 
   private val articleLink: String = link
   private val articleBody: Element = browser.get(link) >> element("body")
@@ -19,6 +19,7 @@ class OTOMOTOArticle(link: String, browser: Browser) {
 
   private val id: String = metadata lift 1 getOrElse "null"
   private val date: String = metadata lift 2 getOrElse "null"
+
   private val title: String = link.substring(30, link.length - 14)
 
   private val yearKilometrageFueltypeBodytype: List[String] = articleBody >> elementList(".offer-main-params__item") >> allText take 4
@@ -36,8 +37,10 @@ class OTOMOTOArticle(link: String, browser: Browser) {
 
   private val photoDownloadLinks: List[String] = articleBody >?> elementList("img").map(_ >?> attr("data-lazy") flatten) getOrElse List.empty
 
-  def toMap: Map[String, Any] = Map(id ->
-    Map("date" -> date,
+  def toMap: Map[String, Any] = Map(
+      "id" -> id,
+      "date" -> date,
+      "scrapDate" -> scrapDate,
       "title" -> title,
       "price" -> price,
       "url" -> articleLink,
@@ -49,10 +52,12 @@ class OTOMOTOArticle(link: String, browser: Browser) {
       "body" -> yearKilometrageFueltypeBodytype(3),
       "details" -> details,
       "equipment" -> equipment,
-      "description" -> description))
+      "description" -> description)
 
-  def toMapNoPhotos: Map[String, Any] = Map(id ->
-    Map("date" -> date,
+  def toMapNoPhotos: Map[String, Any] = Map(
+      "id" -> id,
+      "date" -> date,
+      "scrapDate" -> scrapDate,
       "title" -> title,
       "price" -> price,
       "url" -> articleLink,
@@ -63,7 +68,7 @@ class OTOMOTOArticle(link: String, browser: Browser) {
       "body" -> yearKilometrageFueltypeBodytype(3),
       "details" -> details,
       "equipment" -> equipment,
-      "description" -> description))
+      "description" -> description)
 
   private def savePhotosToDrive(link: String): Unit = {
     println(s"photo saved! $link")

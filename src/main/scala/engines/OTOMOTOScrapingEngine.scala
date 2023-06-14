@@ -31,7 +31,12 @@ class OTOMOTOScrapingEngine {
     val startYear = searchParameters._3
     val endYear = searchParameters._4
 
-    val manufacturerStartYearToYearLink: String = s"https://www.otomoto.pl/osobowe/$manufacturer/$model/od-$startYear?search%5Bfilter_float_year%3Ato%5D=$endYear"
+    val manufacturerStartYearToYearLink: String = if (searchParameters._2 == "any"){
+      s"https://www.otomoto.pl/osobowe/$manufacturer?search[filter_float_year%3Ato]=$endYear"
+    } else {
+      s"https://www.otomoto.pl/osobowe/$manufacturer/$model/od-$startYear?search%5Bfilter_float_year%3Ato%5D=$endYear"
+    }
+
 
 
 
@@ -47,7 +52,7 @@ class OTOMOTOScrapingEngine {
           val articleLink: String = article >> element("h2 a") attr "href"
 
           val currentArticleSeq = {
-            val currentArticle = new OTOMOTOArticle(articleLink, browser)
+            val currentArticle = new OTOMOTOArticle(articleLink, browser, filename)
             if (withPhotos) currentArticle.toMap else currentArticle.toMapNoPhotos
           }
 
