@@ -41,6 +41,9 @@ class OTOMOTOScrapingEngine {
 
 
     println(s"Scraping initiated: $manufacturer, $model, years: $startYear - $endYear\nlink: $manufacturerStartYearToYearLink")
+
+
+    var too_many_redirects: Float = 0
     do {
       try {
         val page = browser.get(manufacturerStartYearToYearLink + s"&page=$pageIteration")
@@ -68,15 +71,18 @@ class OTOMOTOScrapingEngine {
       } catch {
           case e: HttpStatusException => println(s"Unfortunately, article couldn't be fetched due to article expiration")
           case e: StringIndexOutOfBoundsException => println(s"Unfortunately, article couldn't be fetched due to link expiration")
-          case e: IOException => println(s"Too many redirects occured trying to load URL")
+          case e: IOException => {
+            println(s"Too many redirects occured trying to load URL")
+            too_many_redirects += 1
+          }
           case e: NoSuchElementException => println("Element couldn't be found, skipping")
           case e: SocketTimeoutException => println("Socket Timed out!")
       }
 
 
       pageIteration += 1
+    } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page") && too_many_redirects < 100)
 
-    } while (!(nextPageButtonClass contains "pagination-item__disabled") && !(nextPageButtonClass eq "Last Page"))
 
     println(s"Articles fetched: $articlesCount")
     println(s"Scraping finished.\n")

@@ -1,7 +1,8 @@
-[ {
+[
+  {
     "otomoto": {
       "manufacturer": "lexus",
-      "model": "ls",
+      "model": "any",
       "startYear": 1980,
       "endYear": 2000
     }
@@ -11,7 +12,80 @@
       "manufacturer": "toyota",
       "model": "any",
       "startYear": 1900,
-      "endYear": 2005
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "honda",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "mazda",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "mitsubishi",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "nissan",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "suzuki",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "subaru",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "bmw",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "mercedes-benz",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 1997
+    }
+  },
+  {
+    "otomoto": {
+      "manufacturer": "porsche",
+      "model": "any",
+      "startYear": 1900,
+      "endYear": 2000
     }
   }
+
 ]
